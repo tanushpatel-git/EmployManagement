@@ -1,12 +1,8 @@
 import React from 'react'
-import Login from "./Auth/Login.jsx";
 
 const App = () => {
     return (
-        <>
-            <Login/>
-        </>
+        <div>App</div>
     )
 }
 export default App
-
