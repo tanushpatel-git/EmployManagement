@@ -7,12 +7,17 @@ import {
     onChangeFullname,
     onChangePassword,
     onChangeUsername
-} from "../../ReduxManagement/SignUpManagementSlice.js";
+} from "../../ReduxManagement/SliceManage/AuthManagement/SignUpManagementSlice.js";
+import {Link, useNavigate} from "react-router-dom";
+import {setUserStatus} from "../../ReduxManagement/UserAcctivityManage/userStatusManagementSlice.js";
+
 
 export default function SignupPage() {
     const dispatch = useDispatch();
-    const state = useSelector(state=>state.adminTaskManage);
-    const {fullname, username, email, password, category} = useSelector(state => state.adminTaskManage);
+    const state = useSelector(state=>state.signUpManage);
+    const {fullname, username, email, password, category} = useSelector(state => state.signUpManage);
+    let signUpData = JSON.parse(localStorage.getItem("signUpData")) || [];
+    const navigate = useNavigate();
 
     const [errors, setErrors] = useState({});
 
@@ -21,8 +26,7 @@ export default function SignupPage() {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
+    const fromValidation = () =>{
         let newErrors = {};
 
         if (!usernameRegex.test(username)) {
@@ -39,21 +43,49 @@ export default function SignupPage() {
         }
 
         setErrors(newErrors);
+        return newErrors;
+    }
 
-        if (Object.keys(newErrors).length === 0) {
-            console.log("Form Submitted:", state);
+    const userValidation = () =>{
+        const signUpAlreadyExists = signUpData.find(e=>e.email === email);
+        if (signUpAlreadyExists) {
+            alert("User already exists");
+        }else{
+            signUpData.push(state);
+            localStorage.setItem("signUpData",JSON.stringify(signUpData));
+            localStorage.setItem("loginData",JSON.stringify(state));
+            dispatch(setUserStatus(name));
+            navigate("/");
+        }
+    }
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        const errorStatus = fromValidation();
+        if (Object.keys(errorStatus).length === 0) {
+            userValidation()
         }
     };
 
     return (
         <div
             className="min-h-screen flex items-center justify-center bg-gradient-to-br from-black to-neutral-900 text-white px-4">
+
+            {/* Project Name - Top Left */}
+            <div className="absolute top-6 left-6">
+                <h1 className="text-5xl font-bold text-emerald-400 tracking-wide">
+                    Employee Taskyi
+                </h1>
+            </div>
+
+
             <motion.div
                 initial={{opacity: 0, y: 30}}
                 animate={{opacity: 1, y: 0}}
                 transition={{duration: 0.6}}
                 className="w-full max-w-md rounded-2xl border border-white/10 bg-black/70 backdrop-blur-xl p-8 shadow-2xl"
             >
+
                 <h1 className="text-3xl font-semibold text-center mb-2">Create Account</h1>
 
                 <form className="space-y-5" onSubmit={handleSubmit}>
@@ -138,7 +170,7 @@ export default function SignupPage() {
                     >
                         Sign Up
                     </motion.button>
-                    <p className="text-center text-sm text-white/60 mt-6"> Already have an account?{" "} <a href="#" className="text-emerald-400 hover:underline"> Login </a> </p>
+                    <p className="text-center text-sm text-white/60 mt-6"> Already have an account?{" "} <Link to="/" className="text-emerald-400 hover:underline"> Login </Link> </p>
                 </form>
             </motion.div>
         </div>

@@ -8,6 +8,7 @@ const SignUpManagementSlice = createSlice({
         email: "",
         password: "",
         category: "",
+        status:"employee",
     },
     reducers: {
         onChangeEmail: (state, action) => {
