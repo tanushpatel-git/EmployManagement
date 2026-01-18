@@ -1,8 +1,11 @@
 import React from 'react'
+import SignupPage from "./Conponent/AuthCompo/SignupPage.jsx";
 
 const App = () => {
     return (
-        <div>App</div>
+        <div>
+            <SignupPage />
+        </div>
     )
 }
 export default App

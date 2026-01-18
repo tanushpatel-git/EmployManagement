@@ -2,7 +2,9 @@ import React from 'react'
 
 const EmployDashBoard = () => {
     return (
-        <div>EmployDashBoard</div>
+        <div>
+            
+        </div>
     )
 }
 export default EmployDashBoard

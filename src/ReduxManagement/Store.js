@@ -1,9 +1,9 @@
 import {configureStore} from "@reduxjs/toolkit";
-import createTaskSlice from "./CreateTaskSlice.js";
+import SignUpManagementSlice from "./SignUpManagementSlice.js";
 
 const store = configureStore({
     reducer: {
-        adminTaskManage:createTaskSlice
+        adminTaskManage:SignUpManagementSlice
     }
 });
 export default store;
