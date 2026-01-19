@@ -1,8 +1,10 @@
-import {useState} from "react";
+import {Activity, useEffect, useState} from "react";
 import {Search, LogOut, Users} from "lucide-react";
 import EmployeInfoCard from "./AdminDashBoardConponent/EmployeInfoCard.jsx";
-import {setUserStatus} from "../../ReduxManagement/UserAcctivityManage/userStatusManagementSlice.js";
-import {useDispatch} from "react-redux";
+import {setUserStatus} from "../../ReduxManagement/SliceManage/UserAcctivityManage/userStatusManagementSlice.js";
+import {useDispatch, useSelector} from "react-redux";
+import { X } from "lucide-react";
+import {updateUserTaskStatus} from "../../ReduxManagement/SliceManage/UserAcctivityManage/userTaskAssignId.js";
 
 function Button({children, className = "", ...props}) {
     return (
@@ -35,90 +37,206 @@ function Input({className = "", ...props}) {
 export default function AdminDashBoard() {
     const [search, setSearch] = useState("");
     const dispatch = useDispatch();
+    const {id} = useSelector(state=>state.userTaskAssignId);
+    const [taskManage, setTaskManage] = useState({
+        title:"",
+        description:"",
+        date:""
+    })
+    const [toggle, setToggle] = useState(false);
+    const [employees, setEmployees] = useState([]);
 
-    const employees = [
-        {name: "Rahul Sharma", category: "Frontend Developer", done: 12, pending: 3, notDone: 2},
-        {name: "Anita Verma", category: "Backend Developer", done: 9, pending: 4, notDone: 1},
-        {name: "Mohit Singh", category: "UI/UX Designer", done: 15, pending: 1, notDone: 0},
-        {name: "Sneha Patel", category: "QA Engineer", done: 6, pending: 5, notDone: 3},
-    ];
+    useEffect(() => {
+        const signUpData = JSON.parse(localStorage.getItem("signUpData")) || [];
+        setEmployees(signUpData);
+    },[]);
 
     const handleLogout = () => {
         localStorage.removeItem('loginData');
-        dispatch(setUserStatus("noUser"))
+        dispatch(setUserStatus("noUser"));
     }
 
     const filteredEmployees = employees.filter((emp) =>
-        emp.name.toLowerCase().includes(search.toLowerCase()) || emp.category.toLowerCase().includes(search.toLowerCase()),
+        emp.username?.toLowerCase().includes(search.toLowerCase()) || emp.category?.toLowerCase().includes(search.toLowerCase()),
     );
 
+    const handleToggleBtn = (id) => {
+        setToggle(!toggle);
+        dispatch(updateUserTaskStatus(id))
+    }
+
+    const handleTaskSubmit = (e) => {
+        e.preventDefault();
+        const updateArray = employees.map(employee => {
+            if (employee.id === id) {
+                return {
+                    ...employee,
+                    task: {
+                        ...employee.task,
+                        pending: [...(employee.task?.pending || []), taskManage]
+                    }
+                };
+            }
+            return employee;
+        })
+        localStorage.setItem("signUpData", JSON.stringify(updateArray));
+        setToggle(!toggle);
+        setEmployees(updateArray);
+    }
+
     return (
-        <div className="min-h-screen bg-[#020617] text-white p-6">
-            {/* Header */}
-            <div className="flex justify-between items-center mb-10">
-                <div className="flex items-center gap-3">
-                    <div
-                        className="h-11 w-11 rounded-2xl bg-emerald-500 flex items-center justify-center font-bold text-black">
-                        ET
-                    </div>
-                    <h1 className="text-2xl font-semibold text-emerald-400">Employee Taskify</h1>
-                </div>
-                <Button
-                    onClick={handleLogout}
-                    className="bg-red-500 hover:bg-red-400 flex items-center gap-2">
-                    <LogOut size={18}/> Logout
-                </Button>
-            </div>
-
-
-            {/* Welcome Admin */}
-            <div className="mb-10">
-                <h2 className="text-3xl text-gray-300">
-                        Welcome Admin,{" "}
-                    <span className="text-emerald-400 font-semibold text-2xl">
-                            Tanush
-                    </span>
-                </h2>
-            </div>
-
-
-            {/* Stats */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
-                <Card className="bg-[#0f172a] border border-emerald-500/30 p-6">
-                    <div className="flex items-center gap-4">
-                        <Users size={34} className="text-emerald-400"/>
-                        <div>
-                            <p className="text-gray-400 text-sm">Total Employees</p>
-                            <p className="text-3xl font-bold text-emerald-400">{employees.length}</p>
+        <div className="min-h-screen bg-[#020617] text-white p-6 relative">
+                {/* Header */}
+                <div className="flex justify-between items-center mb-10">
+                    <div className="flex items-center gap-3">
+                        <div
+                            className="h-11 w-11 rounded-2xl bg-emerald-500 flex items-center justify-center font-bold text-black">
+                            ET
                         </div>
+                        <h1 className="text-2xl font-semibold text-emerald-400">Employee Taskify</h1>
                     </div>
-                </Card>
-            </div>
+                    <Button
+                        onClick={handleLogout}
+                        className="bg-red-500 hover:bg-red-400 flex items-center gap-2">
+                        <LogOut size={22}/> Logout
+                    </Button>
+                </div>
 
-            {/* Search */}
-            <div className="mb-8 flex items-center gap-3">
-                <Search className="text-emerald-400"/>
-                <Input
-                    placeholder="Search employee by name"
-                    value={search}
-                    onChange={(e) => setSearch(e.target.value)}
-                    className="bg-[#0f172a] border border-emerald-500/30 text-white"
-                />
-            </div>
 
-            {/* Employee Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-                {filteredEmployees.map((emp, index) => (
-                    <EmployeInfoCard
-                        key={index}
-                        name={emp.name}
-                        category={emp.category}
-                        done={emp.done}
-                        pending={emp.pending}
-                        notDone={emp.notDone}
+                {/* Welcome Admin */}
+                <div className="mb-10">
+                    <h2 className="text-3xl text-gray-300">
+                        Welcome Admin,{" "}
+                        <span className="text-emerald-400 font-semibold text-4xl">
+                            Taux
+                    </span>
+                    </h2>
+                </div>
+
+
+                {/* Stats */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+                    <Card className="bg-[#0f172a] border border-emerald-500/30 p-6">
+                        <div className="flex items-center gap-4">
+                            <Users size={34} className="text-emerald-400"/>
+                            <div>
+                                <p className="text-gray-400 text-sm">Total Employees</p>
+                                <p className="text-3xl font-bold text-emerald-400">{employees?.length || 0}</p>
+                            </div>
+                        </div>
+                    </Card>
+                </div>
+
+                {/* Search */}
+                <div className="mb-8 flex items-center gap-3">
+                    <Search className="text-emerald-400"/>
+                    <Input
+                        placeholder="Search employee by name"
+                        value={search}
+                        onChange={(e) => setSearch(e.target.value)}
+                        className="bg-[#0f172a] border border-emerald-500/30 text-white"
                     />
-                ))}
-            </div>
+                </div>
+
+                {/* Employee Cards */}
+                <div className="grid grid-cols-1 overflow-auto md:grid-cols-2 xl:grid-cols-3 gap-6">
+                    {filteredEmployees.length===0?
+                        <div className="flex items-center justify-center w-[100vw] h-[45vh] gap-4">
+                            <h3 className="text-6xl text-gray-500 font-bold">Their are no employee found in employee taskyi.</h3>
+                        </div>:
+                        filteredEmployees.map((emp, index) => (
+                            <EmployeInfoCard
+                                value={employees}
+                                key={index}
+                                idx={emp.id}
+                                name={emp.username}
+                                category={emp.category}
+                                assignTask={()=>{handleToggleBtn(emp.id)}}
+                            />
+                        ))}
+                </div>
+                <div className={`${toggle?'fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-md':''}`}>
+                    <Activity mode={toggle?"visible":"hidden"}>
+                        <div className="rounded-2xl w-[60vw] h-[60vh] gap-4 absolute top-[20vh] left-[20vw]">
+                            <div className="w-full h-full max-w-5xl bg-black rounded-2xl shadow-lg border border-gray-500 flex flex-col">
+                                {/* Header */}
+                                <div className="rounded-t-2xl bg-emerald-600 px-6 py-4 flex items-center justify-between">
+                                    <div>
+                                        <h2 className="text-xl font-semibold text-white">Create New Task</h2>
+                                        <p className="text-sm text-emerald-100">Enter task details below</p>
+                                    </div>
+
+                                    {/* Close Icon */}
+                                    <button
+                                        onClick={()=>{handleToggleBtn()}}
+                                        className="text-white hover:text-gray-200 transition"
+                                        aria-label="Close"
+                                    >
+                                        <X size={35} />
+                                    </button>
+                                </div>
+
+                                {/* Form */}
+                                <form className="px-6 py-5 space-y-4 flex-1 overflow-auto">
+                                    {/* Title */}
+                                    <div>
+                                        <label className="block text-sm font-medium text-white mb-1">
+                                            Task Title
+                                        </label>
+                                        <input
+                                            required
+                                            value={taskManage.title}
+                                            onChange={(e) => {setTaskManage({...taskManage, title:e.target.value})}}
+                                            type="text"
+                                            placeholder="Enter task title"
+                                            className="w-full rounded-lg border border-gray-300 px-3 py-2 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                                        />
+                                    </div>
+
+                                    {/* Description */}
+                                    <div>
+                                        <label className="block text-sm font-medium text-white mb-1">
+                                            Task Description
+                                        </label>
+                                        <textarea
+                                            required
+                                            value={taskManage.description}
+                                            onChange={(e) => {setTaskManage({...taskManage, description:e.target.value})}}
+                                            rows="4"
+                                            placeholder="Enter task description"
+                                            className="w-full rounded-lg border border-gray-300 px-3 py-2 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                                        />
+                                    </div>
+
+                                    {/* Due Date */}
+                                    <div>
+                                        <label className="block text-sm font-medium text-white mb-1">
+                                            Due Date
+                                        </label>
+                                        <input
+                                            required
+                                            value={taskManage.date}
+                                            onChange={(e) => {setTaskManage({...taskManage, date:e.target.value})}}
+                                            type="date"
+                                            className="w-full rounded-lg border border-gray-300 px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                                        />
+                                    </div>
+
+                                    {/* Button */}
+                                    <div className="pt-2">
+                                        <button
+                                            onClick={handleTaskSubmit}
+                                            type="submit"
+                                            className="w-full rounded-xl bg-emerald-600 py-2.5 text-white font-medium shadow-md hover:bg-emerald-700 transition-colors"
+                                        >
+                                            Add Task
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </Activity>
+                </div>
         </div>
     );
 }

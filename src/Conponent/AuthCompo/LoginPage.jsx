@@ -5,8 +5,7 @@ import {onChangeEmailInLoginPage, onChangePasswordInLoginPage} from "../../Redux
 import {Link,useNavigate} from "react-router-dom";
 import {
     setUserStatus,
-    setUserStatusSuccess
-} from "../../ReduxManagement/UserAcctivityManage/userStatusManagementSlice.js";
+} from "../../ReduxManagement/SliceManage/UserAcctivityManage/userStatusManagementSlice.js";
 
 export default function LoginPage() {
     const dispatch = useDispatch();

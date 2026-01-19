@@ -2,7 +2,7 @@ import {useState} from "react";
 import {CheckCircle2, Circle, ListTodo, LogOut} from "lucide-react";
 import {useNavigate} from "react-router-dom";
 import {useDispatch} from "react-redux";
-import {setUserStatus} from "../../ReduxManagement/UserAcctivityManage/userStatusManagementSlice.js";
+import {setUserStatus} from "../../ReduxManagement/SliceManage/UserAcctivityManage/userStatusManagementSlice.js";
 
 
 function Button({children, className = "", ...props}) {

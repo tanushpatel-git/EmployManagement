@@ -3,14 +3,23 @@ import {createSlice} from "@reduxjs/toolkit";
 const SignUpManagementSlice = createSlice({
     name: "signUpManagement",
     initialState: {
+        id:1,
         username: "",
         fullname: "",
         email: "",
         password: "",
         category: "",
         status:"employee",
+        task:{
+            pending:[],
+            done:[],
+            failed:[],
+        }
     },
     reducers: {
+        onSubmitChange:(state) => {
+            state.id = (state.id + 1);
+        },
         onChangeEmail: (state, action) => {
             state.email = action.payload;
         },
@@ -29,4 +38,4 @@ const SignUpManagementSlice = createSlice({
     }
 });
 export default SignUpManagementSlice.reducer;
-export const {onChangeEmail,onChangeFullname,onChangeCategory,onChangePassword,onChangeUsername} = SignUpManagementSlice.actions;
+export const {onChangeEmail,onChangeFullname,onChangeCategory,onChangePassword,onChangeUsername,onSubmitChange} = SignUpManagementSlice.actions;

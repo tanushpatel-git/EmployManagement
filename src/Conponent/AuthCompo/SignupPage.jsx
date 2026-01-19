@@ -2,6 +2,7 @@ import {motion} from "framer-motion";
 import {useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {
+    onSubmitChange,
     onChangeCategory,
     onChangeEmail,
     onChangeFullname,
@@ -9,7 +10,7 @@ import {
     onChangeUsername
 } from "../../ReduxManagement/SliceManage/AuthManagement/SignUpManagementSlice.js";
 import {Link, useNavigate} from "react-router-dom";
-import {setUserStatus} from "../../ReduxManagement/UserAcctivityManage/userStatusManagementSlice.js";
+import {setUserStatus} from "../../ReduxManagement/SliceManage/UserAcctivityManage/userStatusManagementSlice.js";
 
 
 export default function SignupPage() {
@@ -51,6 +52,7 @@ export default function SignupPage() {
         if (signUpAlreadyExists) {
             alert("User already exists");
         }else{
+            dispatch(onSubmitChange())
             signUpData.push(state);
             localStorage.setItem("signUpData",JSON.stringify(signUpData));
             localStorage.setItem("loginData",JSON.stringify(state));

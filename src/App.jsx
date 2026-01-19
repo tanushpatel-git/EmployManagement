@@ -4,7 +4,7 @@ import LoginPage from "./Conponent/AuthCompo/LoginPage.jsx";
 import {Routes,Route} from "react-router-dom";
 import {setLocalStorage} from "./AdminData/AdminDataSetup.jsx";
 import {useDispatch, useSelector} from "react-redux";
-import {setUserStatusSuccess} from "./ReduxManagement/UserAcctivityManage/userStatusManagementSlice.js";
+import {setUserStatusSuccess} from "./ReduxManagement/SliceManage/UserAcctivityManage/userStatusManagementSlice.js";
 import AuthCheck from "./Authentication/AuthCheck.jsx";
 
 const App = () => {
@@ -38,3 +38,15 @@ const App = () => {
     )
 }
 export default App
+
+// import React from 'react'
+// import AdminDashBoard from "./Conponent/DashBorad/AdminDashBoard.jsx";
+//
+// const App = () => {
+//     return (
+//         <div>
+//             <AdminDashBoard/>
+//         </div>
+//     )
+// }
+// export default App
