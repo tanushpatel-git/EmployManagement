@@ -10,6 +10,7 @@ const SignUpManagementSlice = createSlice({
         password: "",
         category: "",
         status:"employee",
+        taskStatus: "pending",
         task:{
             pending:[],
             done:[],

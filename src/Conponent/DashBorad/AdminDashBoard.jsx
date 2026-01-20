@@ -39,7 +39,9 @@ export default function AdminDashBoard() {
     const dispatch = useDispatch();
     const {id} = useSelector(state=>state.userTaskAssignId);
     const [taskManage, setTaskManage] = useState({
+        id:1,
         title:"",
+        taskStatus:"pending",
         description:"",
         date:""
     })
@@ -69,11 +71,12 @@ export default function AdminDashBoard() {
         e.preventDefault();
         const updateArray = employees.map(employee => {
             if (employee.id === id) {
+                setTaskManage({...taskManage, id: taskManage.id+1});
                 return {
                     ...employee,
                     task: {
                         ...employee.task,
-                        pending: [...(employee.task?.pending || []), taskManage]
+                        pending: [...(employee.task?.pending || []),taskManage],
                     }
                 };
             }
