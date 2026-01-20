@@ -41,9 +41,11 @@ export default function EmployeeDashboard() {
     const doneLength = userInfo?.task?.done.length;
     const pendingLength = userInfo?.task?.pending.length;
     const failedLength = userInfo?.task?.failed.length;
-    const tasks = userInfo?.task?.done || [];
+    const tasksForDone = userInfo?.task?.done || [];
+    const tasksForPending = userInfo?.task?.pending || [];
+    const tasksForFailed = userInfo?.task?.failed || [];
 
-    const handleSetTaskChangeSatue = (value) => {
+    const handleSetTaskChangeStatus = (value) => {
         setTaskStatusChange(value);
     }
 
@@ -110,12 +112,32 @@ export default function EmployeeDashboard() {
                 </div>
 
                 <div className="space-y-4 overflow-auto h-[40vh]">
-                    {tasks.map((task,index) => (
+                    {tasksForPending.map((task,index) => (
                         <TaskCard
                             key={index}
                             idx={index+1}
                             title={task.title}
-                            taskChange={handleSetTaskChangeSatue}
+                            taskChange={handleSetTaskChangeStatus}
+                            description={task.description}
+                            task={userInfo}
+                        />
+                    ))}
+                    {tasksForDone.map((task, index) => (
+                        <TaskCard
+                            key={index}
+                            idx={index+1}
+                            title={task.title}
+                            taskChange={handleSetTaskChangeStatus}
+                            description={task.description}
+                            task={userInfo}
+                        />
+                    ))}
+                    {tasksForFailed.map((task, index) => (
+                        <TaskCard
+                            key={index}
+                            idx={index+1}
+                            title={task.title}
+                            taskChange={handleSetTaskChangeStatus}
                             description={task.description}
                             task={userInfo}
                         />

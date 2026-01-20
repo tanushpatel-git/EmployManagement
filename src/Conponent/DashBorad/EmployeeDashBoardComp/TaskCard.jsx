@@ -4,24 +4,9 @@ import {CheckCircle2, Circle} from "lucide-react";
 const TaskCard = ({title,description,task,idx,taskChange}) => {
     const [toggleClick, setToggleClick] = useState(false);
     useEffect(() => {
-            let signUpData = JSON.parse(localStorage.getItem("signUpData")) || [];
-            let tempInfo = task.task.pending;
-            let clickedItem = tempInfo.find(ele => ele.id === idx);
+            // code pending..
         if(toggleClick){
-            if (!clickedItem) return;
-            let updatedPending = tempInfo.filter(ele => ele.id !== idx);
-            let oldDone = task.task.done || [];
-            signUpData[task.id - 1] = {
-                ...task,
-                task: {
-                    ...task.task,
-                    pending: updatedPending,
-                    done: [...oldDone,clickedItem]
-                }
-            };
-
-            localStorage.setItem("signUpData", JSON.stringify(signUpData));
-            taskChange(signUpData);
+            // code pending..
         }else{
             // code pending..
 
