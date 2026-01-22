@@ -38,7 +38,6 @@ const EmployeInfoCard = ({value,assignTask,idx}) => {
             <div className="flex justify-between text-sm mb-6">
                 <span className="text-green-400">Done: {employCard?.task?.done.length || 0}</span>
                 <span className="text-yellow-400">Pending: {employCard?.task?.pending.length || 0}</span>
-                <span className="text-red-400">Not Done: {employCard?.task?.failed.length || 0}</span>
             </div>
 
             <Button

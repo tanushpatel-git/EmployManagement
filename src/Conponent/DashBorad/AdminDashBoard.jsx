@@ -43,7 +43,6 @@ export default function AdminDashBoard() {
         title:"",
         taskStatus:"pending",
         description:"",
-        date:""
     })
     const [toggle, setToggle] = useState(false);
     const [employees, setEmployees] = useState([]);
@@ -111,7 +110,7 @@ export default function AdminDashBoard() {
                     <h2 className="text-3xl text-gray-300">
                         Welcome Admin,{" "}
                         <span className="text-emerald-400 font-semibold text-4xl">
-                            Taux
+                            Tanx
                     </span>
                     </h2>
                 </div>
@@ -159,7 +158,7 @@ export default function AdminDashBoard() {
                         ))}
                 </div>
                 <div className={`${toggle?'fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-md':''}`}>
-                    <Activity mode={toggle?"visible":"hidden"}>
+                    {toggle &&
                         <div className="rounded-2xl w-[60vw] h-[60vh] gap-4 absolute top-[20vh] left-[20vw]">
                             <div className="w-full h-full max-w-5xl bg-black rounded-2xl shadow-lg border border-gray-500 flex flex-col">
                                 {/* Header */}
@@ -187,7 +186,7 @@ export default function AdminDashBoard() {
                                             Task Title
                                         </label>
                                         <input
-                                            required
+                                            required={true}
                                             value={taskManage.title}
                                             onChange={(e) => {setTaskManage({...taskManage, title:e.target.value})}}
                                             type="text"
@@ -202,26 +201,12 @@ export default function AdminDashBoard() {
                                             Task Description
                                         </label>
                                         <textarea
-                                            required
+                                            required={true}
                                             value={taskManage.description}
                                             onChange={(e) => {setTaskManage({...taskManage, description:e.target.value})}}
                                             rows="4"
                                             placeholder="Enter task description"
                                             className="w-full rounded-lg border border-gray-300 px-3 py-2 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
-                                        />
-                                    </div>
-
-                                    {/* Due Date */}
-                                    <div>
-                                        <label className="block text-sm font-medium text-white mb-1">
-                                            Due Date
-                                        </label>
-                                        <input
-                                            required
-                                            value={taskManage.date}
-                                            onChange={(e) => {setTaskManage({...taskManage, date:e.target.value})}}
-                                            type="date"
-                                            className="w-full rounded-lg border border-gray-300 px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
                                         />
                                     </div>
 
@@ -238,7 +223,7 @@ export default function AdminDashBoard() {
                                 </form>
                             </div>
                         </div>
-                    </Activity>
+                    }
                 </div>
         </div>
     );

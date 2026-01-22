@@ -1,6 +1,5 @@
 import {useEffect, useMemo, useState} from "react";
-import {CheckCircle2, Circle, ListTodo, LogOut} from "lucide-react";
-import {useNavigate} from "react-router-dom";
+import { ListTodo, LogOut} from "lucide-react";
 import {useDispatch} from "react-redux";
 import {setUserStatus} from "../../ReduxManagement/SliceManage/UserAcctivityManage/userStatusManagementSlice.js";
 import TaskCard from "./EmployeeDashBoardComp/TaskCard.jsx";
@@ -35,24 +34,15 @@ export default function EmployeeDashboard() {
 
     const totalTasks =
         (userInfo?.task?.done.length || 0) +
-        (userInfo?.task?.pending.length || 0) +
-        (userInfo?.task?.failed.length || 0);
-
+        (userInfo?.task?.pending.length || 0)
     const doneLength = userInfo?.task?.done.length;
     const pendingLength = userInfo?.task?.pending.length;
-    const failedLength = userInfo?.task?.failed.length;
     const tasksForDone = userInfo?.task?.done || [];
     const tasksForPending = userInfo?.task?.pending || [];
-    const tasksForFailed = userInfo?.task?.failed || [];
 
     const handleSetTaskChangeStatus = (value) => {
         setTaskStatusChange(value);
     }
-
-
-    // const completedTasks = tasks.filter((t) => t.status === "completed");
-    // const pendingTasks = tasks.filter((t) => t.status === "pending");
-    // const failedTasks = tasks.filter((t) => t.status === "failed");
 
     return (
         <div className="min-h-screen bg-black text-white p-6">
@@ -85,7 +75,7 @@ export default function EmployeeDashboard() {
 
 
             {/* Stats */}
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-10">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
                 <div className="bg-zinc-900 rounded-2xl p-6 shadow-lg border border-zinc-800">
                     <h2 className="text-gray-400">Total Tasks</h2>
                     <p className="text-4xl font-bold text-emerald-400">{totalTasks}</p>
@@ -97,10 +87,6 @@ export default function EmployeeDashboard() {
                 <div className="bg-zinc-900 rounded-2xl p-6 shadow-lg border border-zinc-800">
                     <h2 className="text-gray-400">Pending</h2>
                     <p className="text-4xl font-bold text-yellow-400">{pendingLength}</p>
-                </div>
-                <div className="bg-zinc-900 rounded-2xl p-6 shadow-lg border border-zinc-800">
-                    <h2 className="text-gray-400">Failed</h2>
-                    <p className="text-4xl font-bold text-red-400">{failedLength}</p>
                 </div>
             </div>
 
@@ -119,27 +105,18 @@ export default function EmployeeDashboard() {
                             title={task.title}
                             taskChange={handleSetTaskChangeStatus}
                             description={task.description}
-                            task={userInfo}
+                            task={task}
+                            userInfoProps={userInfo}
                         />
                     ))}
                     {tasksForDone.map((task, index) => (
                         <TaskCard
                             key={index}
-                            idx={index+1}
                             title={task.title}
                             taskChange={handleSetTaskChangeStatus}
                             description={task.description}
-                            task={userInfo}
-                        />
-                    ))}
-                    {tasksForFailed.map((task, index) => (
-                        <TaskCard
-                            key={index}
-                            idx={index+1}
-                            title={task.title}
-                            taskChange={handleSetTaskChangeStatus}
-                            description={task.description}
-                            task={userInfo}
+                            task={task}
+                            userInfoProps={userInfo}
                         />
                     ))}
                 </div>
