@@ -1,4 +1,4 @@
-import {Activity, useEffect, useState} from "react";
+import { useEffect, useState} from "react";
 import {Search, LogOut, Users} from "lucide-react";
 import EmployeInfoCard from "./AdminDashBoardConponent/EmployeInfoCard.jsx";
 import {setUserStatus} from "../../ReduxManagement/SliceManage/UserAcctivityManage/userStatusManagementSlice.js";

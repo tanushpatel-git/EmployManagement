@@ -1,6 +1,10 @@
 import {motion} from "framer-motion";
 import {useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
+import Swal from 'sweetalert2'
+import withReactContent from 'sweetalert2-react-content'
+
+
 import {
     onSubmitChange,
     onChangeCategory,
@@ -15,6 +19,7 @@ import {setUserStatus} from "../../ReduxManagement/SliceManage/UserAcctivityMana
 
 export default function SignupPage() {
     const dispatch = useDispatch();
+    const swal = withReactContent(Swal);
     const state = useSelector(state=>state.signUpManage);
     const {fullname, username, email, password, category} = useSelector(state => state.signUpManage);
     let signUpData = JSON.parse(localStorage.getItem("signUpData")) || [];
@@ -47,16 +52,32 @@ export default function SignupPage() {
         return newErrors;
     }
 
+    const ifAlreadyExists = () => {
+        swal.fire({
+            icon: "warning",
+            title: "Already exists!",
+        })
+    }
+
+    const resetForm = () => {
+        dispatch(onChangeFullname(""));
+        dispatch(onChangeCategory(""));
+        dispatch(onChangePassword(""));
+        dispatch(onChangeUsername(""));
+        dispatch(onChangeEmail(""));
+    }
+
     const userValidation = () =>{
         const signUpAlreadyExists = signUpData.find(e=>e.email === email);
         if (signUpAlreadyExists) {
-            alert("User already exists");
+            ifAlreadyExists()
         }else{
             dispatch(onSubmitChange())
             signUpData.push(state);
             localStorage.setItem("signUpData",JSON.stringify(signUpData));
             localStorage.setItem("loginData",JSON.stringify(state));
             dispatch(setUserStatus(name));
+            resetForm();
             navigate("/");
         }
     }

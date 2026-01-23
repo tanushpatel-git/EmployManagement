@@ -3,6 +3,8 @@ import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {onChangeEmailInLoginPage, onChangePasswordInLoginPage} from "../../ReduxManagement/SliceManage/AuthManagement/LoginManagementSlice.js";
 import {Link,useNavigate} from "react-router-dom";
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
 import {
     setUserStatus,
 } from "../../ReduxManagement/SliceManage/UserAcctivityManage/userStatusManagementSlice.js";
@@ -10,6 +12,7 @@ import {
 export default function LoginPage() {
     const dispatch = useDispatch();
     const navigate = useNavigate();
+    const swal = withReactContent(Swal);
     const state = useSelector(state => state.loginManage);
     const { email, password } = useSelector(state => state.loginManage);
     const signUpData = JSON.parse(localStorage.getItem("signUpData")) || [];
@@ -53,6 +56,14 @@ export default function LoginPage() {
         return status;
     }
 
+    const ifNotUserFound = () => {
+        swal.fire({
+            icon: "warning",
+            title: "You are not allowed for login!",
+            confirmButtonText: "Cool"
+        });
+    }
+
     const handleSubmit = (e) => {
         e.preventDefault();
         const errorStatus = formValidation()
@@ -65,7 +76,7 @@ export default function LoginPage() {
                 dispatch(onChangePasswordInLoginPage(""));
                 navigate("/");
             }else{
-                alert("Your are not exist to login")
+                ifNotUserFound()
             }
         }
     };
