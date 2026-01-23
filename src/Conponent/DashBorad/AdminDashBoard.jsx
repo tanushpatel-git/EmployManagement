@@ -4,7 +4,8 @@ import EmployeInfoCard from "./AdminDashBoardConponent/EmployeInfoCard.jsx";
 import {setUserStatus} from "../../ReduxManagement/SliceManage/UserAcctivityManage/userStatusManagementSlice.js";
 import {useDispatch, useSelector} from "react-redux";
 import { X } from "lucide-react";
-import {updateUserTaskStatus} from "../../ReduxManagement/SliceManage/UserAcctivityManage/userTaskAssignId.js";
+import  {updateUserTaskStatus} from "../../ReduxManagement/SliceManage/UserAcctivityManage/userTaskAssignId.js";
+import TaskDetail from "./AdminDashBoardConponent/TaskDetail.jsx";
 
 function Button({children, className = "", ...props}) {
     return (
@@ -37,15 +38,17 @@ function Input({className = "", ...props}) {
 export default function AdminDashBoard() {
     const [search, setSearch] = useState("");
     const dispatch = useDispatch();
-    const {id} = useSelector(state=>state.userTaskAssignId);
     const [taskManage, setTaskManage] = useState({
         id:1,
         title:"",
         taskStatus:"pending",
         description:"",
-    })
+    });
     const [toggle, setToggle] = useState(false);
+    const [toggleView, setToggleView] = useState(false);
     const [employees, setEmployees] = useState([]);
+    const [allTaskIs, setAllTaskIs] = useState([]);
+    const taskClickId = useSelector(state=>state.userTaskAssignId);
 
     useEffect(() => {
         const signUpData = JSON.parse(localStorage.getItem("signUpData")) || [];
@@ -63,13 +66,66 @@ export default function AdminDashBoard() {
 
     const handleToggleBtn = (id) => {
         setToggle(!toggle);
-        dispatch(updateUserTaskStatus(id))
+        dispatch(updateUserTaskStatus(id));
+    }
+
+    const handleToggleBtnForViewTask = (id) => {
+        setToggleView(!toggleView);
+        const findUser = employees.find((employee) => employee.id === id);
+        setAllTaskIs([...findUser.task.pending,...findUser.task.done]);
+        dispatch(updateUserTaskStatus(id));
+    }
+
+    const handleDeleteBtn = (id,status) => {
+        const findUser = employees.find((employee) => employee.id === taskClickId.id);
+        if(status === "pending") {
+            let taskFilter = findUser.task.pending.filter((employee) => employee.id !== id);
+            const updation = employees.map(employee => {
+                if(employee.id === taskClickId.id){
+                    return {
+                        ...employee,
+                        task:{
+                            ...employee.task,
+                            pending:taskFilter,
+                        }
+                    }
+                }
+            });
+            localStorage.setItem("signUpData", JSON.stringify(updation));
+            setEmployees(updation);
+            const currentUser = updation.find(e => e.id === taskClickId.id);
+            setAllTaskIs([
+                ...currentUser.task.pending,
+                ...currentUser.task.done,
+            ]);
+        }else{
+            let taskFilter = findUser.task.done.filter((employee) => employee.id !== id);
+            const updationForComplete = employees.map(employee => {
+                if(employee.id === taskClickId.id){
+                    return {
+                        ...employee,
+                        task:{
+                            ...employee.task,
+                            done:taskFilter,
+                        }
+                    }
+                }
+            });
+            localStorage.setItem("signUpData", JSON.stringify(updationForComplete));
+            setEmployees(updationForComplete);
+            const currentUser = updationForComplete.find(e => e.id === taskClickId.id);
+            setAllTaskIs([
+                ...currentUser.task.pending,
+                ...currentUser.task.done
+            ]);
+        }
+
     }
 
     const handleTaskSubmit = (e) => {
         e.preventDefault();
         const updateArray = employees.map(employee => {
-            if (employee.id === id) {
+            if (employee.id === taskClickId.id) {
                 setTaskManage({...taskManage, id: taskManage.id+1});
                 return {
                     ...employee,
@@ -80,7 +136,7 @@ export default function AdminDashBoard() {
                 };
             }
             return employee;
-        })
+        });
         localStorage.setItem("signUpData", JSON.stringify(updateArray));
         setToggle(!toggle);
         setEmployees(updateArray);
@@ -154,6 +210,7 @@ export default function AdminDashBoard() {
                                 name={emp.username}
                                 category={emp.category}
                                 assignTask={()=>{handleToggleBtn(emp.id)}}
+                                viewTask={()=>{handleToggleBtnForViewTask(emp.id)}}
                             />
                         ))}
                 </div>
@@ -221,6 +278,38 @@ export default function AdminDashBoard() {
                                         </button>
                                     </div>
                                 </form>
+                            </div>
+                        </div>
+                    }
+                    {toggleView &&
+                        <div className="rounded-2xl w-[60vw] h-[60vh] absolute top-[20vh] left-[20vw]">
+                            <div className="w-full h-full max-w-5xl bg-black rounded-2xl shadow-lg border border-gray-500 flex flex-col">
+                                {/* Header */}
+                                <div className="rounded-t-2xl bg-yellow-600 px-6 py-4 flex items-center justify-between">
+                                    <div>
+                                        <h2 className="text-xl font-semibold text-white">View Task</h2>
+                                        <p className="text-sm text-emerald-100">All Task Here.</p>
+                                    </div>
+
+                                    {/* Close Icon */}
+                                    <button
+                                        onClick={()=>setToggleView(!toggleView)}
+                                        className="text-white hover:text-gray-200 transition"
+                                        aria-label="Close"
+                                    >
+                                        <X size={35} />
+                                    </button>
+                                </div>
+
+                                {allTaskIs.length === 0 ? <h1 className="h-full w-full text-gray-500 text-6xl flex text-center items-center justify-center">There is no Task Assign </h1> : allTaskIs.map((element,index) => (
+                                    <TaskDetail
+                                        key={index}
+                                        title={element.title}
+                                        description={element.description}
+                                        status={element.taskStatus}
+                                        deleteBtn={()=>handleDeleteBtn(element.id,element.taskStatus)}
+                                    />
+                                ))}
                             </div>
                         </div>
                     }

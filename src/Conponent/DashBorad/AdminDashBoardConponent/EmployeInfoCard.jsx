@@ -21,7 +21,7 @@ function Button({children, className = "", ...props}) {
 }
 
 
-const EmployeInfoCard = ({value,assignTask,idx}) => {
+const EmployeInfoCard = ({value,assignTask,idx,viewTask}) => {
     const [employCard, setEmployeeCard] = useState([]);
     useEffect(()=>{
         const signUpData = JSON.parse(localStorage.getItem("signUpData")) || [];
@@ -40,11 +40,18 @@ const EmployeInfoCard = ({value,assignTask,idx}) => {
                 <span className="text-yellow-400">Pending: {employCard?.task?.pending.length || 0}</span>
             </div>
 
-            <Button
-                onClick={assignTask}
-                className="w-full bg-emerald-500 text-black hover:bg-emerald-400">
-                Assign Task
-            </Button>
+            <div className="flex m-2 gap-5">
+                <Button
+                    onClick={assignTask}
+                    className="w-full bg-emerald-500 text-black hover:bg-emerald-400">
+                    Assign Task
+                </Button>
+                <Button
+                    onClick={viewTask}
+                    className="w-full bg-yellow-400 text-black hover:bg-yellow-300">
+                    View Task
+                </Button>
+            </div>
         </Card>
     )
 }
